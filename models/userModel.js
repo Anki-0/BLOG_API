@@ -2,53 +2,61 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-const userSchema = new mongoose.Schema({
- user_name: { type: String, maxlength: [60, 'Can not exced 60 character'] },
- user_pass: {
-  type: String,
-  required: [true, 'user must have a password'],
-  minlength: [8, 'Enter password greater than 8'],
-  maxlength: [255, 'Can not exced 255 character'],
-  select: false,
- },
- user_nickname: {
-  type: String,
-  maxlength: [50, 'Can not exced 50 character'],
-  unique: true,
- },
- user_dob: {
-  type: Date,
-  // required: [true, 'user must have a D.O.B'],
- },
- user_phone: {
-  type: Number,
-  // required: [true, 'user must have a phone number'],
-  maxlength: [10, 'Enter valid phone number'],
-  minlength: [10, 'Enter valid phone number'],
- },
- user_email: {
-  type: String,
-  required: [true, 'user must have a email'],
-  maxlength: [100, 'Can not exced 100 character'],
-  unique: true,
- },
- user_registered: {
-  type: Date,
-  maxlength: [100, 'Can not exced 100 character'],
- },
- user_status: { type: String, maxlength: [100, 'Can not exced 100 character'] },
- user_role: {
-  type: String,
-  enum: {
-   values: ['admin', 'member'],
-   message: '{VALUE} is not supported',
+const userSchema = new mongoose.Schema(
+ {
+  user_name: { type: String, maxlength: [60, 'Can not exced 60 character'] },
+  user_pass: {
+   type: String,
+   required: [true, 'user must have a password'],
+   minlength: [8, 'Enter password greater than 8'],
+   maxlength: [255, 'Can not exced 255 character'],
+   select: false,
   },
-  default: 'member',
+  user_nickname: {
+   type: String,
+   maxlength: [50, 'Can not exced 50 character'],
+   unique: true,
+  },
+  user_dob: {
+   type: Date,
+   // required: [true, 'user must have a D.O.B'],
+  },
+  user_phone: {
+   type: Number,
+   // required: [true, 'user must have a phone number'],
+   maxlength: [10, 'Enter valid phone number'],
+   minlength: [10, 'Enter valid phone number'],
+  },
+  user_email: {
+   type: String,
+   required: [true, 'user must have a email'],
+   maxlength: [100, 'Can not exced 100 character'],
+   unique: true,
+  },
+  user_registered: {
+   type: Date,
+   maxlength: [100, 'Can not exced 100 character'],
+  },
+  user_status: {
+   type: String,
+   maxlength: [100, 'Can not exced 100 character'],
+  },
+  user_role: {
+   type: String,
+   enum: {
+    values: ['admin', 'member'],
+    message: '{VALUE} is not supported',
+   },
+   default: 'member',
+  },
+  user_passwordChangedAt: { type: Date },
+  passwordResetToken: { type: String },
+  passwordResetExp: { type: Date },
  },
- user_passwordChangedAt: { type: Date },
- passwordResetToken: { type: String },
- passwordResetExp: { type: Date },
-});
+ {
+  timestamps: true,
+ }
+);
 
 // /**Going to populate each find query */
 // userSchema.pre(/^find/, function (next) {

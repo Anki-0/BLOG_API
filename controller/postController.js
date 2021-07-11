@@ -85,15 +85,16 @@ exports.getPost = async (req, res) => {
   });
  }
 };
+
 //*PATCH_TOUR*/
 exports.updatePost = async (req, res) => {
  //runValidater is not workking
- console.log(req);
  try {
   const post = await Posts.findByIdAndUpdate(req.params.id, req.body, {
    new: true,
    runValidators: true,
   });
+  await post.save();
 
   //console.log(req.body);
 
