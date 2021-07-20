@@ -6,12 +6,13 @@ dotenv.config({
  path: './config.env',
 });
 let DB;
+DB = process.env.DATABASE_LOCAL; //DB_LOCAL
 
-if (process.env.NODE_ENV.trim() === 'production') {
- DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD);
-} else if (process.env.NODE_ENV.trim() === 'development') {
- DB = process.env.DATABASE_LOCAL; //DB_LOCAL
-}
+// if (process.env.NODE_ENV.trim() === 'production') {
+//  DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD);
+// } else if (process.env.NODE_ENV.trim() === 'development') {
+//  DB = process.env.DATABASE_LOCAL; //DB_LOCAL
+// }
 
 mongoose
  .connect(DB, {
