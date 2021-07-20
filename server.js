@@ -6,12 +6,12 @@ dotenv.config({
  path: './config.env',
 });
 
-// const DB = process.env.DATABASE.replace(
-//  '<password>',
-//  process.env.DATABASE_PASSWORD
-// );
+const DB = process.env.DATABASE.replace(
+ '<password>',
+ process.env.DATABASE_PASSWORD
+);
 
-const DB = process.env.DATABASE_LOCAL; //DB_LOCAL
+// const DB = process.env.DATABASE_LOCAL; //DB_LOCAL
 
 mongoose
  .connect(DB, {
