@@ -40,7 +40,8 @@ const postSchema = new mongoose.Schema(
 postSchema.pre(/^find/, function (next) {
  this.populate({
   path: 'post_author',
-  select: '-user_pass -user_email -user_phone -user_dob -user_post -__v',
+  select:
+   '-user_pass -user_email -user_phone -user_dob -user_passwordChangedAt -__v',
  });
  next();
 });

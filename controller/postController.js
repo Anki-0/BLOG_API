@@ -1,6 +1,8 @@
 const Posts = require('../models/post.model');
 // const uploads = require('../models/uploadsModel');
 const APIfeatures = require('../utils/apiFeatures');
+const AppError = require('../utils/appError');
+const catchAsync = require('../utils/catchAync');
 
 //READING DATA
 // const tours = JSON.parse(
@@ -39,52 +41,42 @@ exports.alias = (req, res, next) => {
  next();
 };
 
-exports.getAllPosts = async (req, res) => {
+exports.getAllPosts = catchAsync(async (req, res, next) => {
  //console.log(req.query.sort);
- try {
-  //EXECUTE QUERY
-  const features = new APIfeatures(Posts.find(), req.query)
-   .filter()
-   .sort()
-   .limitingFileds()
-   .pagination();
 
-  const posts = await features.query;
+ //EXECUTE QUERY
+ const features = new APIfeatures(Posts.find(), req.query)
+  .filter()
+  .sort()
+  .limitingFileds()
+  .pagination();
 
-  res.status(200).json({
-   status: 'SUCESS',
-   resquestedAt: req.requestTime,
-   result: posts.length,
+ const posts = await features.query;
 
-   posts,
-  });
- } catch (err) {
-  //console.log('ERROR-> ', err);
-  res.status(400).json({
-   status: 'fail',
-   message: err.message || 'INTERNAL SERVER ERROR',
-  });
- }
-};
+ if (!posts) return next(new AppError('Can not get posts', 400));
+
+ res.status(200).json({
+  status: 'success',
+  resquestedAt: req.requestTime,
+  result: posts.length,
+  posts,
+ });
+});
+
 /*GET_SPECIFIC_TOUR*/
-exports.getPost = async (req, res) => {
- try {
-  // console.log('get specific post ➡ ', req.params);
+exports.getPost = catchAsync(async (req, res, next) => {
+ // console.log('get specific post ➡ ', req.params);
+ const post = await Posts.findById(req.params.id);
 
-  const post = await Posts.findOne({ post_title: `${req.params.id}` });
-
-  res.status(200).json({
-   status: 'SUCESS',
-
-   post,
-  });
- } catch (err) {
-  res.status(400).json({
-   status: 'fail',
-   message: err,
-  });
+ if (!post) {
+  return next(new AppError('No post Found with that ID', 404));
  }
-};
+
+ res.status(200).json({
+  status: 'success',
+  post,
+ });
+});
 
 //*PATCH_TOUR*/
 exports.updatePost = async (req, res) => {
@@ -113,22 +105,18 @@ exports.updatePost = async (req, res) => {
  }
 };
 /*CREATE_NEW_TOUR*/
-exports.createPost = async (req, res) => {
- try {
-  const newPost = await Posts.create(req.body);
-  res.status(201).json({
-   status: 'SUCESS',
-   data: {
-    posts: newPost,
-   },
-  });
- } catch (err) {
-  res.status(400).json({
-   status: 'fail',
-   message: err,
-  });
- }
-};
+exports.createPost = catchAsync(async (req, res, next) => {
+ const newPost = await Posts.create(req.body);
+
+ if (!newPost) return next(new AppError('Failed to Post the article!!', 400));
+
+ res.status(201).json({
+  status: 'SUCESS',
+  data: {
+   posts: newPost,
+  },
+ });
+});
 
 exports.deletePost = async (req, res) => {
  try {

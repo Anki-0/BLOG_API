@@ -25,7 +25,11 @@ router
   authController.restrictTo('admin', 'member'),
   postController.updatePost
  )
- .get(postController.getPost)
+ .get(
+  authController.potect,
+  authController.restrictTo('admin', 'member'),
+  postController.getPost
+ )
  .delete(
   authController.potect,
   authController.restrictTo('admin', 'member'),

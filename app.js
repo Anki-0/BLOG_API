@@ -6,14 +6,18 @@ const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/userRoutes');
 const postRouter = require('./routes/postRoutes');
 const uploadRouter = require('./routes/uploadRoutes');
+const AppError = require('./utils/appError');
+const AppErrorHandler = require('./middleware/appErrorHandler');
 
 const app = express();
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 app.use(
  cors({
-  origin: '*',
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
   optionsSuccessStatus: 200,
+  credentials: true,
  })
 );
 
@@ -22,16 +26,14 @@ if (process.env.NODE_ENV === 'development') {
  app.use(morgan('dev'));
 }
 
-app.use(cookieParser());
-
 app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
  req.requestTime = new Date().toISOString();
  console.log('cookies : ', req.cookies);
+ console.log('cookies : ', process.env.NODE_ENV.trim() === 'production');
  next();
 });
-
 ////////////
 ///ROUTES
 app.use('/api/v1/posts', postRouter);
@@ -48,4 +50,19 @@ app.use('/create', async (req, res) => {
  //  }
 });
 
+app.all('*', (req, res, next) => {
+ /*
+      res.status(404).json({
+        status: 'fail',
+        message: `Can't find ${req.originalUrl} on this server!`
+      });
+      */
+ //  const err = new Error(`Can't find ${req.originalUrl} on this server!`);
+ //  err.status = 'fail';
+ //  err.statusCode = 404;
+
+ next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use(AppErrorHandler);
 module.exports = app;

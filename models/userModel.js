@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
   user_nickname: {
    type: String,
    maxlength: [50, 'Can not exced 50 character'],
-   unique: true,
+   unique: [true, 'User Name already exits Try another one'],
   },
   user_dob: {
    type: Date,
@@ -24,8 +24,8 @@ const userSchema = new mongoose.Schema(
   user_phone: {
    type: Number,
    // required: [true, 'user must have a phone number'],
-   maxlength: [10, 'Enter valid phone number'],
-   minlength: [10, 'Enter valid phone number'],
+   max: [10, 'Enter valid phone number'],
+   min: [10, 'Enter valid phone number'],
   },
   user_email: {
    type: String,
