@@ -79,6 +79,17 @@ exports.login = catchAync(async (req, res, next) => {
  createSendToken(200, 'Loged-In Sucessfully', user, res);
 });
 
+exports.logout = catchAsync(async (req, res, next) => {
+ res.cookie('jwt', 'loogedout', {
+  expires: new Date(Date.now() + 10 * 1000),
+  httpOnly: true,
+  secure: process.env.NODE_ENV.trim() === 'production',
+  sameSite: 'none',
+ });
+
+ res.status(200).json({ status: 'success', message: 'Logged Out' });
+});
+
 exports.potect = catchAync(async (req, res, next) => {
  //get the token and check its existing
  //  console.log(res);
