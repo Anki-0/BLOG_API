@@ -5,6 +5,7 @@ const app = require('./app');
 dotenv.config({
  path: './config.env',
 });
+
 let DB;
 // DB = process.env.DATABASE_LOCAL; //DB_LOCAL
 

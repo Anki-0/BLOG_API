@@ -13,20 +13,35 @@ const app = express();
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 
-app.use(
- cors({
-  origin: [
-   '*',
-   'http://localhost:3000',
-   'http://127.0.0.1:3000',
-   'https://ankitblog.tk',
-  ],
-  optionsSuccessStatus: 200,
-  credentials: true,
- })
-);
+const allowlist = [
+ 'http://localhost:3000',
+ 'http://127.0.0.1:3000',
+ 'https://ankitblog.tk',
+];
+const corsOptionsDelegate = function (req, callback) {
+ let corsOptions;
+ if (allowlist.indexOf(req.header('Origin')) !== -1) {
+  corsOptions = { origin: true, credentials: true, optionsSuccessStatus: 200 }; // reflect (enable) the requested origin in the CORS response
+ } else {
+  corsOptions = { origin: false }; // disable CORS for this request
+ }
+ callback(null, corsOptions); // callback expects two parameters: error and options
+};
 
+// app.use(
+//  cors({
+//   origin: [
+//    '*',
+//    'http://localhost:3000',
+//    'http://127.0.0.1:3000',
+//    'https://ankitblog.tk',
+//   ],
+//   optionsSuccessStatus: 200,
+//   credentials: true,
+//  })
+// );
 app.use(helmet());
+
 if (process.env.NODE_ENV === 'development') {
  app.use(morgan('dev'));
 }
@@ -41,9 +56,9 @@ app.use((req, res, next) => {
 });
 ////////////
 ///ROUTES
-app.use('/api/v1/posts', postRouter);
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/upload', uploadRouter);
+app.use('/api/v1/posts', cors(corsOptionsDelegate), postRouter);
+app.use('/api/v1/users', cors(corsOptionsDelegate), userRouter);
+app.use('/api/v1/upload', cors(corsOptionsDelegate), uploadRouter);
 
 app.use('/create', async (req, res) => {
  //  try {
