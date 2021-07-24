@@ -10,6 +10,7 @@
  "scripts": {
   "start": "node server.js",
   "dev": "nodemon server.js",
+  "prod": "nodemon server.js",
   "production": "set NODE_ENV=production && nodemon server.js",
   "debug": "ndb server.js"
  },
@@ -30,7 +31,6 @@
   "sharp": "^0.28.3"
  },
  "devDependencies": {
-  "@vercel/node": "^1.11.1",
   "eslint": "^7.30.0",
   "eslint-config-airbnb": "^18.2.1",
   "eslint-config-prettier": "^8.3.0",
