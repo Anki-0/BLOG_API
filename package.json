@@ -30,6 +30,7 @@
   "sharp": "^0.28.3"
  },
  "devDependencies": {
+  "@vercel/node": "^1.11.1",
   "eslint": "^7.30.0",
   "eslint-config-airbnb": "^18.2.1",
   "eslint-config-prettier": "^8.3.0",
