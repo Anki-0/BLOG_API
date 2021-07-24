@@ -28,7 +28,7 @@ const createSendToken = (statusCode, message, newUser, res, next) => {
  users.user_password = undefined;
 
  res.status(statusCode).json({
-  status: 'sucess',
+  status: 'success',
   token,
   message: message,
  });
@@ -142,27 +142,29 @@ exports.restrictTo =
   next();
  };
 
-exports.forgetpassword = async (req, res) => {
+exports.forgetpassword = catchAync(async (req, res, next) => {
  //1.get user email
  const user = await users.findOne({ user_email: req.body.userEmail });
+
  console.log(user);
- if (!req.body.userEmail)
-  res.status(200).json({ message: 'please send email' });
- if (!user) {
-  res.status(404).json({ message: 'User does not exist with this email!!' });
- }
+
+ if (!req.body.userEmail) return next(new AppError('Please Enter Email', 400));
+ if (!user)
+  return next(new AppError('User does not exist with this email!!', 400));
 
  //2.generate random token
  const resetToken = user.createPasswordResetToken();
  await user.save({ validateBeforeSave: false });
 
  //3.send it to user vai email
- const resetURl = `${req.protocol}://${req.get(
-  'host'
- )}/api/v1/users/reset/${resetToken}`;
-
+ //  const resetURl = `${req.protocol}://${req.get(
+ //   'host'
+ //  )}/api/v1/users/reset/${resetToken}`;
+ const resetURl = `https://ankitblog.tk/reset/${resetToken}`;
  console.log({ resetURl });
+
  const message = `Forget your pasword? Submit a new req with yout new password to ${resetURl}.`;
+
  try {
   await sendEmail({
    email: req.body.userEmail,
@@ -170,19 +172,21 @@ exports.forgetpassword = async (req, res) => {
    message,
   });
 
-  res
-   .status(200)
-   .json({ status: 'SUCESS', message: 'token sended to the mail' });
+  res.status(200).json({
+   status: 'success',
+   message: `Reset Link Sended to ${req.body.userEmail}`,
+  });
  } catch (err) {
   user.passwordResetToken = undefined;
   user.passwordResetExp = undefined;
   await user.save({ validateBeforeSave: false });
 
-  res.status(500).json({ message: 'error in sending the email', err: err });
+  return next(new AppError('Error in sending the email', 500));
+  // res.status(500).json({ message: 'error in sending the email', err: err });
  }
-};
+});
 
-exports.resetpassword = async (req, res) => {
+exports.resetpassword = catchAync(async (req, res, next) => {
  console.log(`TOKEN => ${req.params.token}`);
  const tokenHash = crypto
   .createHash('sha256')
@@ -196,7 +200,7 @@ exports.resetpassword = async (req, res) => {
  console.log(user);
 
  if (!user) {
-  res.status(400).json({ message: 'Link is epired or invalid' });
+  return next(new AppError('Link is epired or invalid', 400));
  }
 
  user.user_pass = req.body.userPassword;
@@ -205,7 +209,7 @@ exports.resetpassword = async (req, res) => {
  await user.save();
 
  createSendToken(200, 'Password Reset Sucessfull', user, res);
-};
+});
 
 exports.updatePassword = async (req, res, next) => {
  //  //getting the user

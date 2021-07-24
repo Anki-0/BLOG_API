@@ -91,7 +91,7 @@ exports.updatePost = async (req, res) => {
   //console.log(req.body);
 
   res.status(200).json({
-   status: 'SUCESS',
+   status: 'success',
    message: 'Update Done',
    data: {
     post,
@@ -111,7 +111,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
  if (!newPost) return next(new AppError('Failed to Post the article!!', 400));
 
  res.status(201).json({
-  status: 'SUCESS',
+  status: 'success',
   data: {
    posts: newPost,
   },
@@ -122,7 +122,7 @@ exports.deletePost = async (req, res) => {
  try {
   const post = await Posts.findOneAndDelete({ post_title: `${req.params.id}` });
   res.status(200).json({
-   status: 'SUCESS',
+   status: 'success',
    post,
   });
  } catch (err) {
@@ -149,7 +149,7 @@ exports.toursStats = async (req, res) => {
    },
   ]);
   res.status(200).json({
-   message: 'Sucess',
+   message: 'success',
    data: {
     stages,
    },
