@@ -17,6 +17,7 @@
  "author": "Ankit Singh",
  "license": "ISC",
  "dependencies": {
+  "@trycourier/courier": "^2.4.0",
   "bcrypt": "^5.0.1",
   "cookie-parser": "^1.4.5",
   "cors": "^2.8.5",

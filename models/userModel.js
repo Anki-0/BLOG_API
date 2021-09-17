@@ -52,6 +52,8 @@ const userSchema = new mongoose.Schema(
   user_passwordChangedAt: { type: Date },
   passwordResetToken: { type: String },
   passwordResetExp: { type: Date },
+  emailVerifyToken: { type: String },
+  emailVerifyExp: { date: Date },
  },
  {
   timestamps: true,
@@ -113,6 +115,19 @@ userSchema.methods.changePasswordAfter = function (JWTTimestamp) {
  }
 
  return false; //false means no change
+};
+
+userSchema.methods.cerateEmailVerificationToken = function () {
+ const authToken = crypto.randomBytes(32).toString('hex');
+
+ this.emailVerifyToken = crypto
+  .createHash('sha256')
+  .update(authToken)
+  .digest('hex');
+
+ this.emailVerifyExp = Date.now() + 10 * 60 * 1000;
+
+ return authToken;
 };
 
 const users = mongoose.model('users', userSchema);

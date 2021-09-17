@@ -9,8 +9,8 @@ const router = express.Router();
 
 router
  .route('/validateUser')
- .post(authController.potect, authController.validateUsers);
-router.route('/signup').post(authController.signup);
+ .get(authController.potect, authController.validateUsers);
+router.route('/signup/:token?').post(authController.signup);
 router.route('/login').post(authController.login);
 router.route('/logout').get(authController.potect, authController.logout);
 router.route('/forget').post(authController.forgetpassword);

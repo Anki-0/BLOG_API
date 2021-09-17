@@ -37,44 +37,34 @@ const createSendToken = (statusCode, message, newUser, res, next) => {
 exports.signup = catchAsync(async (req, res, next) => {
  const newUser = await users.create({
   user_email: req.body.userEmail,
-  user_pass: req.body.userPassword,
-  user_nickname: req.body.userNickname,
-  user_phone: req.body.user_phone,
-  user_passwordChangedAt: req.body.user_passwordChangedAt,
  });
 
- if (!newUser) {
-  // res.status(400).json({
-  //  status: 'fail',
-  //  message: err,
-  // });
-  next(new AppError('err', 404));
- }
+ if (!req.body.userEmail) return next(new AppError('Please Enter Email', 400));
 
+ //  if (!newUser) {
+ //   // res.status(400).json({
+ //   //  status: 'fail',
+ //   //  message: err,
+ //   // });
+ //   next(new AppError('err', 404));
+ //  }
  createSendToken(201, 'User_Account is Created!!', newUser, res);
 });
-
 exports.login = catchAync(async (req, res, next) => {
  const { userEmail, userPassword } = req.body;
-
  console.log(`${userEmail} , ${userPassword}`);
-
  //if useremail and useremail id not valid
-
  if (!userEmail || !userPassword)
   return next(new AppError('Please Enter Email and Password', 401));
-
  //checking if the user exist and password is valid
  const user = await users
   .findOne({ user_email: `${userEmail}` })
   .select('+user_pass');
-
  if (!user || !(await user.validatePassword(userPassword, user.user_pass))) {
   return next(new AppError('Please enter valid password or email', 401));
  }
  user.user_pass = undefined;
  console.log(user);
-
  //if every things ok then send the token to the client
  createSendToken(200, 'Loged-In Sucessfully', user, res);
 });
@@ -90,6 +80,7 @@ exports.logout = catchAsync(async (req, res, next) => {
  res.status(200).json({ status: 'success', message: 'Logged Out' });
 });
 
+//!-------------------------------------------PROTECT----------------------------------------------------------------------!//
 exports.potect = catchAync(async (req, res, next) => {
  //get the token and check its existing
  //  console.log(res);
@@ -129,6 +120,8 @@ exports.potect = catchAync(async (req, res, next) => {
 
  next();
 });
+
+//!-------------------------------------------PROTECT-END----------------------------------------------------------------------!//
 
 exports.restrictTo =
  (...roles) =>
@@ -197,6 +190,7 @@ exports.resetpassword = catchAync(async (req, res, next) => {
   passwordResetToken: tokenHash,
   passwordResetExp: { $gt: Date.now() },
  });
+
  console.log(user);
 
  if (!user) {
@@ -212,7 +206,7 @@ exports.resetpassword = catchAync(async (req, res, next) => {
 });
 
 exports.updatePassword = async (req, res, next) => {
- //  //getting the user
+ //getting the user
  const user = await users.findById(req.user.id).select('+user_pass');
  console.log('USER =>', user);
 

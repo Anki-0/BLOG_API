@@ -107,7 +107,7 @@ exports.updatePost = async (req, res) => {
 /*CREATE_NEW_TOUR*/
 exports.createPost = catchAsync(async (req, res, next) => {
  const newPost = await Posts.create(req.body);
-
+ console.log('create post', req.body);
  if (!newPost) return next(new AppError('Failed to Post the article!!', 400));
 
  res.status(201).json({
@@ -120,7 +120,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
 
 exports.deletePost = async (req, res) => {
  try {
-  const post = await Posts.findOneAndDelete({ post_title: `${req.params.id}` });
+  const post = await Posts.findByIdAndDelete(req.params.id);
   res.status(200).json({
    status: 'success',
    post,
