@@ -37,19 +37,20 @@ const createSendToken = (statusCode, message, newUser, res, next) => {
 exports.signup = catchAsync(async (req, res, next) => {
  const newUser = await users.create({
   user_email: req.body.userEmail,
+  user_username: req.body.userUsername,
+  user_pass: req.body.userPassword,
  });
 
- if (!req.body.userEmail) return next(new AppError('Please Enter Email', 400));
-
- //  if (!newUser) {
- //   // res.status(400).json({
- //   //  status: 'fail',
- //   //  message: err,
- //   // });
- //   next(new AppError('err', 404));
- //  }
+ if (!newUser) {
+  // res.status(400).json({
+  //  status: 'fail',
+  //  message: err,
+  // });
+  next(new AppError('err', 404));
+ }
  createSendToken(201, 'User_Account is Created!!', newUser, res);
 });
+
 exports.login = catchAync(async (req, res, next) => {
  const { userEmail, userPassword } = req.body;
  console.log(`${userEmail} , ${userPassword}`);
