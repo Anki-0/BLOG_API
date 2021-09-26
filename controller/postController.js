@@ -66,7 +66,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
 /*GET_SPECIFIC_TOUR*/
 exports.getPost = catchAsync(async (req, res, next) => {
  // console.log('get specific post ➡ ', req.params);
- const post = await Posts.findById(req.params.id);
+ const post = await Posts.findOne({ post_title: req.params.id });
 
  if (!post) {
   return next(new AppError('No post Found with that ID', 404));
