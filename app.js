@@ -29,18 +29,19 @@ const corsOptionsDelegate = function (req, callback) {
  callback(null, corsOptions); // callback expects two parameters: error and options
 };
 
-// app.use(
-//  cors({
-//   origin: [
-//    '*',
-//    'http://localhost:3000',
-//    'http://127.0.0.1:3000',
-//    'https://ankitblog.tk',
-//   ],
-//   optionsSuccessStatus: 200,
-//   credentials: true,
-//  })
-// );
+app.use(
+ cors({
+  origin: [
+   '*',
+   'http://localhost:3000',
+   'http://127.0.0.1:3000',
+   'https://ankitblog.tk',
+   'https://dev-blog.ga',
+  ],
+  optionsSuccessStatus: 200,
+  credentials: true,
+ })
+);
 app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
