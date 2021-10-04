@@ -1,5 +1,5 @@
 const express = require('express');
-// const userController = require('../controller/usersController');
+const userController = require('../controller/userController');
 const authController = require('../controller/authController');
 
 const router = express.Router();
@@ -18,5 +18,9 @@ router.route('/reset/:token').patch(authController.resetpassword);
 router
  .route('/updatePassword')
  .patch(authController.potect, authController.updatePassword);
+router
+ .route('/:id')
+ .patch(authController.potect, userController.updateUser)
+ .get(userController.getUser);
 
 module.exports = router;

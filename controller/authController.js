@@ -226,7 +226,7 @@ exports.updatePassword = async (req, res, next) => {
 
 exports.validateUsers = catchAsync(async (req, res, next) => {
  const { user } = req;
- if (!user) next(new AppError('Unauthorised User', 401));
+ if (!user) next(new AppError('Unauthorised User', 403));
 
  res.status(200).json({ status: 'success', isAuthenticated: true, user });
 });

@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
    // required: [true, 'user must have a D.O.B'],
   },
   user_phone: {
-   type: Number,
+   type: String,
    // required: [true, 'user must have a phone number'],
    max: [10, 'Enter valid phone number'],
    min: [10, 'Enter valid phone number'],

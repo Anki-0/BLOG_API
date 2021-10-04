@@ -5,18 +5,18 @@ const app = require('./app');
 dotenv.config({
  path: './config.env',
 });
-let DB;
-// const DB = process.env.DATABASE_LOCAL; //DB_LOCAL
+// let DB;
+const DB = process.env.DATABASE_LOCAL; //DB_LOCAL
 // const DB = process.env.DATABASE.replace(
 //  '<password>',
 //  process.env.DATABASE_PASSWORD
 // );
 
-if (process.env.NODE_ENV.trim() === 'production') {
- DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD);
-} else if (process.env.NODE_ENV.trim() === 'development') {
- DB = process.env.DATABASE_LOCAL; //DB_LOCAL
-}
+// if (process.env.NODE_ENV.trim() === 'production') {
+//  DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD);
+// } else if (process.env.NODE_ENV.trim() === 'development') {
+//  DB = process.env.DATABASE_LOCAL; //DB_LOCAL
+// }
 
 mongoose
  .connect(DB, {

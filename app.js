@@ -18,7 +18,6 @@ const allowlist = [
  'http://127.0.0.1:3000',
  'https://ankitblog.tk',
  'https://dev-blog.ga',
- '*',
 ];
 const corsOptionsDelegate = function (req, callback) {
  let corsOptions;
