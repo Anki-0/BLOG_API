@@ -6,11 +6,11 @@ dotenv.config({
  path: './config.env',
 });
 // let DB;
-// const DB = process.env.DATABASE_LOCAL; //DB_LOCAL
-const DB = process.env.DATABASE.replace(
- '<password>',
- process.env.DATABASE_PASSWORD
-);
+const DB = process.env.DATABASE_LOCAL; //DB_LOCAL
+// const DB = process.env.DATABASE.replace(
+//  '<password>',
+//  process.env.DATABASE_PASSWORD
+// );
 
 // if (process.env.NODE_ENV.trim() === 'production') {
 //  DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD);

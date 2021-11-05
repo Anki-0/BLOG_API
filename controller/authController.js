@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const crypto = require('crypto');
@@ -35,10 +36,11 @@ const createSendToken = (statusCode, message, newUser, res, next) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+ //  console.log('===========>', req.body.userName);
  const newUser = await users.create({
-  user_email: req.body.userEmail,
-  user_username: req.body.userUsername,
-  user_pass: req.body.userPassword,
+  user_email: req.body.user_email,
+  user_nickname: req.body.user_nickname,
+  user_pass: req.body.user_pass,
  });
 
  if (!newUser) {
@@ -50,26 +52,32 @@ exports.signup = catchAsync(async (req, res, next) => {
  }
  createSendToken(201, 'User_Account is Created!!', newUser, res);
 });
-
+//!-------------------------------------------LOGIN----------------------------------------------------------------------!//
 exports.login = catchAync(async (req, res, next) => {
- const { userEmail, userPassword } = req.body;
- console.log(`${userEmail} , ${userPassword}`);
+ console.log(req.body);
+
+ const { user_email, user_pass } = req.body;
+
  //if useremail and useremail id not valid
- if (!userEmail || !userPassword)
+ if (!user_email || !user_pass)
   return next(new AppError('Please Enter Email and Password', 401));
+
  //checking if the user exist and password is valid
  const user = await users
-  .findOne({ user_email: `${userEmail}` })
+  .findOne({ user_email: `${user_email}` })
   .select('+user_pass');
- if (!user || !(await user.validatePassword(userPassword, user.user_pass))) {
+ if (!user || !(await user.validatePassword(user_pass, user.user_pass))) {
   return next(new AppError('Please enter valid password or email', 401));
  }
  user.user_pass = undefined;
  console.log(user);
+
  //if every things ok then send the token to the client
  createSendToken(200, 'Loged-In Sucessfully', user, res);
 });
+//!-------------------------------------------END----------------------------------------------------------------------!//
 
+//!-------------------------------------------LOOUT----------------------------------------------------------------------!//
 exports.logout = catchAsync(async (req, res, next) => {
  res.cookie('jwt', 'Logging Out', {
   expires: new Date(Date.now() + 10 * 1000),
@@ -80,6 +88,7 @@ exports.logout = catchAsync(async (req, res, next) => {
 
  res.status(200).json({ status: 'success', message: 'Logged Out' });
 });
+//!-------------------------------------------END----------------------------------------------------------------------!//
 
 //!-------------------------------------------PROTECT----------------------------------------------------------------------!//
 exports.potect = catchAync(async (req, res, next) => {
@@ -121,9 +130,9 @@ exports.potect = catchAync(async (req, res, next) => {
 
  next();
 });
+//!-------------------------------------------END----------------------------------------------------------------------!//
 
-//!-------------------------------------------PROTECT-END----------------------------------------------------------------------!//
-
+//!-------------------------------------------RESTRICT----------------------------------------------------------------------!//
 exports.restrictTo =
  (...roles) =>
  (req, res, next) => {
@@ -135,14 +144,16 @@ exports.restrictTo =
 
   next();
  };
+//!-------------------------------------------END----------------------------------------------------------------------!//
 
+//!-------------------------------------------FORGET_PASSWORD----------------------------------------------------------------------!//
 exports.forgetpassword = catchAync(async (req, res, next) => {
  //1.get user email
- const user = await users.findOne({ user_email: req.body.userEmail });
+ const user = await users.findOne({ user_email: req.body.user_email });
 
  console.log(user);
 
- if (!req.body.userEmail) return next(new AppError('Please Enter Email', 400));
+ if (!req.body.user_email) return next(new AppError('Please Enter Email', 400));
  if (!user)
   return next(new AppError('User does not exist with this email!!', 400));
 
@@ -161,14 +172,14 @@ exports.forgetpassword = catchAync(async (req, res, next) => {
 
  try {
   await sendEmail({
-   email: req.body.userEmail,
+   email: req.body.user_email,
    subject: 'Reset Password',
    message,
   });
 
   res.status(200).json({
    status: 'success',
-   message: `Reset Link Sended to ${req.body.userEmail}`,
+   message: `Reset Link Sended to ${req.body.user_email}`,
   });
  } catch (err) {
   user.passwordResetToken = undefined;
@@ -179,7 +190,9 @@ exports.forgetpassword = catchAync(async (req, res, next) => {
   // res.status(500).json({ message: 'error in sending the email', err: err });
  }
 });
+//!-------------------------------------------END----------------------------------------------------------------------!//
 
+//!-------------------------------------------RESET-PASSWORD----------------------------------------------------------------------!//
 exports.resetpassword = catchAync(async (req, res, next) => {
  console.log(`TOKEN => ${req.params.token}`);
  const tokenHash = crypto
@@ -198,14 +211,16 @@ exports.resetpassword = catchAync(async (req, res, next) => {
   return next(new AppError('Link is epired or invalid', 400));
  }
 
- user.user_pass = req.body.userPassword;
+ user.user_pass = req.body.user_pass;
  user.passwordResetExp = undefined;
  user.passwordResetToken = undefined;
  await user.save();
 
  createSendToken(200, 'Password Reset Sucessfull', user, res);
 });
+//!-------------------------------------------END----------------------------------------------------------------------!//
 
+//!-------------------------------------------UPDATE-PASSWORD----------------------------------------------------------------------!//
 exports.updatePassword = async (req, res, next) => {
  //getting the user
  const user = await users.findById(req.user.id).select('+user_pass');
@@ -223,6 +238,7 @@ exports.updatePassword = async (req, res, next) => {
  //  //new token
  createSendToken(200, 'Password is Updated', user, res);
 };
+//!-------------------------------------------END----------------------------------------------------------------------!//
 
 exports.validateUsers = catchAsync(async (req, res, next) => {
  const { user } = req;

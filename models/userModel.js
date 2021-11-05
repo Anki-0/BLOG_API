@@ -4,18 +4,37 @@ const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema(
  {
-  user_name: { type: String, maxlength: [60, 'Can not exced 60 character'] },
+  user_name: {
+   type: String,
+   maxlength: [60, 'Can not exced 60 character'],
+  },
+  user_nickname: {
+   type: String,
+   maxlength: [50, 'Can not exced 50 character'],
+   unique: [true, 'User Name already exits Try another one'],
+   required: true,
+  },
+  user_description: {
+   type: String,
+  },
+  user_country: {
+   type: String,
+  },
+  user_state: {
+   type: String,
+  },
+  user_occupation: {
+   type: String,
+  },
+  user_birthplace: {
+   type: String,
+  },
   user_pass: {
    type: String,
    required: [true, 'user must have a password'],
    minlength: [8, 'Enter password greater than 8'],
    maxlength: [255, 'Can not exced 255 character'],
    select: false,
-  },
-  user_nickname: {
-   type: String,
-   maxlength: [50, 'Can not exced 50 character'],
-   unique: [true, 'User Name already exits Try another one'],
   },
   user_dob: {
    type: Date,
