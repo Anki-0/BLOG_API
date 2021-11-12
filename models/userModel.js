@@ -68,6 +68,12 @@ const userSchema = new mongoose.Schema(
    },
    default: 'member',
   },
+  user_tagline: {
+   type: String,
+  },
+  user_website: {
+   type: String,
+  },
   user_passwordChangedAt: { type: Date },
   passwordResetToken: { type: String },
   passwordResetExp: { type: Date },

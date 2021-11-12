@@ -3,7 +3,7 @@ const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAync');
 
 exports.updateUser = catchAsync(async (req, res, next) => {
- console.log(req.body);
+ console.log('BODY====>', req.body);
 
  const updatedUser = await users.findByIdAndUpdate(req.params.id, req.body, {
   new: true,

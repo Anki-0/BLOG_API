@@ -5,13 +5,9 @@ const app = require('./app');
 dotenv.config({
  path: './config.env',
 });
-let DB;
 // const DB = process.env.DATABASE_LOCAL; //DB_LOCAL
-// const DB = process.env.DATABASE.replace(
-//  '<password>',
-//  process.env.DATABASE_PASSWORD
-// );
 
+let DB;
 if (process.env.NODE_ENV.trim() === 'production') {
  DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD);
 } else if (process.env.NODE_ENV.trim() === 'development') {
